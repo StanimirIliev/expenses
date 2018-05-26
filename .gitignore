@@ -1,0 +1,8 @@
+.gradle
+build/
+gradlew.bat
+gradlew
+gradle/
+expenses.iml
+.idea/
+out/
