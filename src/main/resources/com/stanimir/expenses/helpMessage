@@ -1,58 +1,73 @@
-usage: expenses [OPTION]...
-Saves and prints expenses
+Usage:
 
-Mandatory arguments to long options are mandatory for short options too.
-OPTIONS:
-    -n --new                        Save new expense
-    -k --kind=KIND                  Required and used in combination
-                                    with 'n'. Can be used with combination
-                                    with 'p' but then it is not required.
-                                    Set kind of the expense when creating a
-                                    new one and get expenses from specific
-                                    kind when is used with 'p'
-    -d --description=DESCRIPTION    Used in combination with 'n', but
-                                    not required. Set description for
-                                    the expense
-    -a --amount=AMOUNT              Required and used in combination
-                                    with 'n'. Set amount of the expense.
-    -D --date=DATE                  If this option is combined with 'n'
-                                    then it is used for setting the new
-                                    expense a specific creation date. If
-                                    is omitted when creating a new expense
-                                    today's date will be used. In
-                                    combination with 'p' this options is
-                                    used for the filtering expenses by date
-    -p --print                      Show expenses
-    -y --yesterday                  Used in combination with 'p'. Show
-                                    expenses from yesterday
-    -t --today                      Used in combination with 'p'. Show
-                                    expenses from today
-    --past-week                     Used in combination with 'p'. Show
-                                    expenses from past week
-    --this-week                     Used in combination with 'p'. Show
-                                    expenses from this week
-    -i --import=FILE                Import expenses from file
-    -e --export=FILE                Export expenses to file
-    -? --help                       Print this message
-NOTE:
-    -i -e -p -n These options cannot make combinations with itself
-EXAMPLES:
-    Add new expense: expenses -n -k sweet -d 'chocolate from the local store'
-                     -a 1.15 -D '2018-05-22'
-                     expenses -n -k sweet -a 1.15
-    Show expenses:
-        from the beginning of the week: expenses -p --this-week
-        for the past week:              expenses -p --past-week
-        from yesterday:                 expenses -p -y or expenses -py
-        from today:                     expenses -p -t or expenses -pt
-        from specific date:             expenses -D '2018-04-01'
-        all:                            expenses -p
-        from specific kind:             expenses -p -k sweet
-    Import expenses: expenses -i dir/file
-    Export expenses: expenses -e dir/file
-FORMAT:
-    KIND            Text
-    DESCRIPTION     Text
-    AMOUNT          Double
-    DATE            Date in format 'YYYY-MM-DD' e.g. '2018-05-27'
-    FILE            Path to file
+Creating new expense:
+
+When creating new expense option 'n' should be used,
+to define that this is going to be a new expense.
+Options 'k', 'd', 'a' and 'D' means 'kind', 'description',
+'amount' and 'date' respectively. 'k' and 'd' takes string as
+argument, 'a' takes double and 'D' accepts date format. When
+creating new expense only 'k' and 'a' options are mandatory.
+
+Examples:
+
+expenses -n -k Kind -d 'String with spaces needs quotes' -a 5.1
+expenses -n -k Kind -D '2018-04-23' -a 5,1
+
+Updating existing expense:
+
+When editing expense option 'e' should be used, which also takes
+the id of the expense as argument. Options 'k', 'd', 'a' and 'D'
+are used to update the existing data of the expense and each of
+them is not required.
+
+Examples:
+
+expenses -e 15 -k 'new kind'
+expenses -e 15 -D '2018/05/17'
+expenses -e 15 -k 'new kind' -d 'new description' -a 5.9 -D '2018/05/17'
+
+Deleting expense:
+
+When deleting expense option 'delete' should be used which takes
+the id of the expense as argument.
+
+Examples:
+
+expenses --delete 15
+
+Prints expenses:
+
+To print the expenses, option 'p' should be used. Although there are two
+exceptions. When using the options 'printKindsOnly' and 'printMonthsAmount'
+option 'p' should be omitted.
+
+Examples:
+
+expenses -p //prints all expenses
+expenses -p -k 'kind1, kind2'// prints all expenses with kinds 'kind1' and 'kind2'
+expenses -p -k 'kind1, kind2' --startDate '2018.01.01' --endDate '2018-07-12'
+                                                            // prints all expenses
+                                                                with kinds 'kind1'
+                                                                and 'kind2' within
+                                                                the selected period
+expenses -p --startDate '2018.01.01' --endDate '2018-07-12'// prints all expenses
+                                                             within the provided
+                                                             dates including them
+expenses --printKindsOnly// prints all kinds
+expenses --printMonthsAmount// prints the total amount for each month
+
+Valid data formats:
+
+double:
+1.5
+1,5
+date:
+2018-05-03
+18-5-3
+2018/05/03
+18/5/3
+2018.05.03
+18.5.3
+
+With '?' or 'help' this message is printed

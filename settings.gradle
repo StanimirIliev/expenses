@@ -1,2 +1,4 @@
 rootProject.name = 'expenses'
+include 'testing'
+include 'table'
 
