@@ -11,7 +11,7 @@ buildscript {
 }
 
 group 'stanimir'
-version '1.0-SNAPSHOT'
+version '1.0'
 
 apply plugin: 'kotlin'
 
@@ -28,8 +28,11 @@ task fatJar(type: Jar) {
                 'Implementation-Version': version,
                 'Main-Class': 'com.stanimir.expenses.ExpensesBootstrapKt'
     }
-    baseName = project.name + '-all'
+    archiveName = 'expenses.jar'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    from ('schema') {
+        include 'expenses.sql'
+    }
     with jar
 }
 
