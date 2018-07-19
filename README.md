@@ -1,14 +1,17 @@
 Simple program for managing expenses with CLI
 
 # Set up
-1. Install JRE SE [Download](http://www.oracle.com/technetwork/java/javase/downloads/server-jre8-downloads-2133154.html).
-2. Configure mysql server.
-3. Set up the following environment variables:
+1. Install JRE SE [Download](http://www.oracle.com/technetwork/java/javase/downloads/server-jre8-downloads-2133154.html).  
+2. Install Gradle [From here](https://gradle.org/install). 
+3. Run Gradle command ```gradle fatJar``` inside the ```expenses-cli``` folder
+4. The generated jar file is located in ```expenses-cli/build/libs/expenses.jar```
+5. Configure mysql server.
+6. Set up the following environment variables:
  - DB_HOST (e.g.: 127.0.0.1:3306)
  - DB_USER
  - DB_PASS
  - DB_DATABASE 
-4. Done!
+7. Done!
 
 # Usage
 Creating new expense:
@@ -73,6 +76,7 @@ Examples:
 1.5
 1,5
 .5
+,5
 ``` 
 ### date:
 ```
