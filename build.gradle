@@ -30,9 +30,6 @@ task fatJar(type: Jar) {
     }
     archiveName = 'expenses.jar'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    from ('schema') {
-        include 'expenses.sql'
-    }
     with jar
 }
 

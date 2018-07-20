@@ -24,7 +24,7 @@ class PersistentExpenseRepositoryTest {
 
     init {
         val mySqlDataSource = MysqlDataSource()
-        mySqlDataSource.setUrl("jdbc:mysql://${System.getenv("DB_HOST")}/${System.getenv("DB_DATABASE")}" +
+        mySqlDataSource.setUrl("jdbc:adapter.db.mysql.schema://${System.getenv("DB_HOST")}/${System.getenv("DB_DATABASE")}" +
                 "?useUnicode=true&" +
                 "useJDBCCompliantTimezoneShift=true&" +
                 "useLegacyDatetimeCode=false&" +

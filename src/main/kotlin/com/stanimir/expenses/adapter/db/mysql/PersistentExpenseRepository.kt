@@ -2,6 +2,7 @@ package com.stanimir.expenses.adapter.db.mysql
 
 import com.stanimir.expenses.core.*
 import java.io.FileReader
+import java.nio.charset.Charset
 import java.sql.ResultSet
 import java.time.LocalDate
 import java.util.*
@@ -25,7 +26,11 @@ class PersistentExpenseRepository(private val template: JdbcTemplate) : ExpenseR
     }
 
     init {// create table if not exists
-        template.execute(FileReader("schema/expenses.sql").readText())
+        template.execute(PersistentExpenseRepository::class.java
+                .getResourceAsStream("schema/expenses.sql")
+                .reader(Charset.defaultCharset())
+                .readText()
+        )
     }
 
     override fun register(kind: String, description: String, amount: Double, date: LocalDate): Expense {
