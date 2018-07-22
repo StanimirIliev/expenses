@@ -1,7 +1,7 @@
 Simple program for managing expenses with CLI
 
 # Set up
-1. Install JRE SE [Download](http://www.oracle.com/technetwork/java/javase/downloads/server-jre8-downloads-2133154.html).  
+1. Install JDK SE [Download](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).  
 2. Install Gradle [From here](https://gradle.org/install). 
 3. Run Gradle command ```gradle fatJar``` inside the ```expenses-cli``` folder
 4. The generated jar file is located in ```expenses-cli/build/libs/expenses.jar```
