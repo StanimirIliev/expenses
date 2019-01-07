@@ -11,13 +11,14 @@ interface ExpenseRepository {
     /**
      * Save expense to persistent layer
      *
+     * @param id the id of the expense
      * @param kind the kind of the expense
      * @param description the description of the expense
      * @param amount the amount of the expense
      * @param date the date of the expense
      * @return the registered expense
      */
-    fun register(kind: String, description: String, amount: Double, date: LocalDate): Expense
+    fun register(id: String, kind: String, description: String, amount: Double, date: LocalDate): Expense
 
     /**
      * Get expenses filtered by kind. If both start and end dates are provided
@@ -44,7 +45,7 @@ interface ExpenseRepository {
      * @param id the id of the desired expense
      * @return optional expense
      */
-    fun getById(id: Int): Optional<Expense>
+    fun getById(id: String): Optional<Expense>
 
     /**
      * Gets all expenses
@@ -63,7 +64,7 @@ interface ExpenseRepository {
      * @param date the new date
      * @throws [ExpenseNotFoundException]
      */
-    fun update(id: Int, kind: String, description: String, amount: Double, date: LocalDate)
+    fun update(id: String, kind: String, description: String, amount: Double, date: LocalDate)
 
     /**
      * Marks expense as deleted
@@ -71,5 +72,5 @@ interface ExpenseRepository {
      * @param id the id of the expense to delete
      * @throws [ExpenseNotFoundException]
      */
-    fun delete(id: Int)
+    fun delete(id: String)
 }

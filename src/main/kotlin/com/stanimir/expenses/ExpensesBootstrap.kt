@@ -1,14 +1,23 @@
 package com.stanimir.expenses
 
-import com.mysql.cj.jdbc.MysqlDataSource
-import com.stanimir.expenses.adapter.cli.apache.*
+import com.mongodb.client.MongoClients
+import com.stanimir.expenses.adapter.cli.apache.CannotParseOptionException
+import com.stanimir.expenses.adapter.cli.apache.OptionValueNotFoundException
+import com.stanimir.expenses.adapter.cli.apache.parseOption
+import com.stanimir.expenses.adapter.cli.apache.parseOptionList
+import com.stanimir.expenses.adapter.cli.apache.parseOptionOrNull
 import com.stanimir.expenses.adapter.cli.display.ConsoleExpensesDisplay
-import com.stanimir.expenses.adapter.db.mysql.PersistentExpenseRepository
-import com.stanimir.expenses.adapter.template.mysql.MysqlTemplate
-import org.apache.commons.cli.*
+import com.stanimir.expenses.adapter.db.mongodb.PersistentExpenseRepository
+import com.stanimir.expenses.adapter.db.mongodb.SequenceIdGenerator
+import org.apache.commons.cli.DefaultParser
+import org.apache.commons.cli.Option
+import org.apache.commons.cli.OptionGroup
+import org.apache.commons.cli.Options
+import org.apache.commons.cli.ParseException
 import java.nio.charset.Charset
 import java.time.LocalDate
-import java.util.*
+import java.util.Optional
+import java.util.logging.LogManager
 
 /**
  * @author Stanimir Iliev <stanimir.iliev@clouway.com />
@@ -47,18 +56,13 @@ class ExpensesBootstrap(val args: Array<String>) {
     }
 
     fun start() {
-        val mySqlDataSource = MysqlDataSource()
-        mySqlDataSource.setUrl("jdbc:mysql://${System.getenv("DB_HOST")}/${System.getenv("DB_DATABASE")}" +
-                "?useUnicode=true&" +
-                "useJDBCCompliantTimezoneShift=true&" +
-                "useLegacyDatetimeCode=false&" +
-                "serverTimezone=UTC&" +
-                "characterEncoding=utf8&" +
-                "useSSL=false")
-        mySqlDataSource.user = System.getenv("DB_USER")
-        mySqlDataSource.setPassword(System.getenv("DB_PASS"))
-        val jdbcTemplate = MysqlTemplate(mySqlDataSource)
-        val repository = PersistentExpenseRepository(jdbcTemplate)
+        LogManager.getLogManager().reset()
+
+        val db = "prod"
+        val dbClient = MongoClients.create(System.getenv("connectionString"))
+
+        val repository = PersistentExpenseRepository(dbClient.getDatabase(db))
+        val idGenerator = SequenceIdGenerator(dbClient.getDatabase(db))
         val parser = DefaultParser()
         val display = ConsoleExpensesDisplay(repository)
 
@@ -72,6 +76,7 @@ class ExpensesBootstrap(val args: Array<String>) {
                         return
                     }
                     val expense = repository.register(
+                            idGenerator.generate(),
                             cmd.getOptionValue('k'),
                             cmd.parseOptionOrNull("d", String::class.java) ?: "",
                             cmd.parseOption("a", Double::class.java),
@@ -84,7 +89,7 @@ class ExpensesBootstrap(val args: Array<String>) {
                 cmd.hasOption("p") -> {
                     when {
                         cmd.hasOption("k") -> {
-                            if(cmd.hasOption("startDate") && cmd.hasOption("endDate")) {
+                            if (cmd.hasOption("startDate") && cmd.hasOption("endDate")) {
                                 display.printByKinds(
                                         cmd.parseOptionList("k", String::class.java),
                                         Optional.of(cmd.parseOption("startDate", LocalDate::class.java)),
@@ -104,7 +109,7 @@ class ExpensesBootstrap(val args: Array<String>) {
                     }
                 }
                 cmd.hasOption("e") -> {
-                    val id = cmd.parseOptionOrNull("e", Int::class.java)
+                    val id = cmd.parseOptionOrNull("e", String::class.java)
                     if (id == null) {
                         println("option e takes argument id of the expenses which to update")
                         return
@@ -125,7 +130,7 @@ class ExpensesBootstrap(val args: Array<String>) {
                     println("Expense with id $id updated successfully.")
                 }
                 cmd.hasOption("delete") -> {
-                    val id = cmd.parseOptionOrNull("delete", Int::class.java)
+                    val id = cmd.parseOptionOrNull("delete", String::class.java)
                     if (id == null) {
                         println("option delete takes argument id of the expense which to delete")
                         return
