@@ -7,10 +7,10 @@ import java.time.LocalDate
  */
 
 data class Expense(
-        val id: Int,
-        val kind: String,
-        val description: String,
-        val amount: Double,
-        val date: LocalDate,
+        val id: String = "",
+        val kind: String = "",
+        val description: String = "",
+        val amount: Double = 0.0,
+        val date: LocalDate = LocalDate.now(),
         val deletedOn: LocalDate? = null
 )
