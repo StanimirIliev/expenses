@@ -62,9 +62,9 @@ class ConsoleExpensesDisplay(private val repository: ExpenseRepository) : Expens
                 Header(15, "TOTAL AMOUNT", Table.Align.CENTER)
         ))
 
-        repository.getAll().groupBy { it.date.month }.forEach {
+        repository.getAll().groupBy { ExpenseKey(it.date) }.forEach {
             table.addRow(listOf(
-                    Cell(it.key.name, Table.Align.CENTER),
+                    Cell(it.key.month.name, Table.Align.CENTER),
                     Cell(formatAmount(it.value.map { it.amount }.sum()), Table.Align.CENTER)
             )).addSeparatingLine(Table.LineWeight.LIGHT)
         }
@@ -104,15 +104,13 @@ class ConsoleExpensesDisplay(private val repository: ExpenseRepository) : Expens
     private fun printExpensesWithMonthSummary(expenses: List<Expense>) {
         val table = SimpleTable(Table.LineWeight.BOLD, true)
 
-        expenses.groupBy { it.date.month }.forEach {
+        expenses.groupBy { ExpenseKey(it.date) }.forEach {
             print(table
-                    .setHeader(listOf(Header(75, "Expenses for ${it.key.name}", Table.Align.CENTER)))
+                    .setHeader(listOf(Header(75, "Expenses for ${it.key.month.name} ${it.key.year}", Table.Align.CENTER)))
                     .build())
 
             table.setHeader(headers)
 
-            val monthExpenses = it.value
-            monthExpenses.groupBy { it.date }
 
             it.value.forEach { expense ->
                 table.addRow(listOf(
@@ -128,7 +126,7 @@ class ConsoleExpensesDisplay(private val repository: ExpenseRepository) : Expens
             print(table.build())
 
             print(table
-                    .setHeader(listOf(Header(75, "Total for ${it.key.name}: ${formatAmount(it.value.map { it.amount }.sum())}", Table.Align.CENTER)))
+                    .setHeader(listOf(Header(75, "Total for ${it.key.month.name} ${it.key.year}: ${formatAmount(it.value.map { it.amount }.sum())}", Table.Align.CENTER)))
                     .build())
         }
     }
